@@ -1,3 +1,5 @@
+const assert = require('assert');
+
 require('babel-core/register')({
   ignore: /node_modules\/(?!ProjectB)/
 });
@@ -15,17 +17,38 @@ describe('Elevator', function() {
     let mockUser = { name: "Brittany", currentFloor: 2, dropOffFloor: 5 };
     elevator.goToFloor(mockUser);
 
-    assert(elevator.currentFloor).equals(5);
-    assert(elevator.motionStatus).equals('idle');
-    assert(elevator.getStops()).equals([2, 5]);
+    assert.equal(elevator.currentFloor, 5);
+    assert.equal(elevator.motionStatus, 'idle');
+    assert.deepEqual(elevator.getStops(), [2, 5]);
   });
 
   it('should bring a rider to a floor below their current floor', () => {
     let mockUser = { name: "Brittany", currentFloor: 8, dropOffFloor: 3 };
     elevator.goToFloor(mockUser);
 
-    assert(elevator.currentFloor).equals(3);
-    assert(elevator.motionStatus).equals('idle');
-    assert(elevator.getStops()).equals([8, 3]);
+    assert.equal(elevator.currentFloor, 3);
+    assert.equal(elevator.motionStatus, 'idle');
+    assert.deepEqual(elevator.getStops(), [8, 3]);
+  });
+
+  it('should be able to keep track of floors it has traversed', () => {
+    let mockUser = { name: "Kenia", currentFloor: 0, dropOffFloor: 5 };
+
+    elevator.goToFloor(mockUser);
+
+    assert.equal(elevator.currentFloor, 5);
+    assert.equal(elevator.motionStatus, 'idle');
+    assert.deepEqual(elevator.getStops(), [0, 5]);
+    assert.equal(elevator.countFloors(), 5);
+  });
+
+  it('should be able to keep track of amount of stops elevator takes', () => {
+
+    assert.equal(elevator.countStops(), 0);
+    let mockUser = { name: "Kenia", currentFloor: 0, dropOffFloor: 5 };
+
+    elevator.goToFloor(mockUser);
+
+    assert.equal(elevator.countStops(), 1)
   });
 });
